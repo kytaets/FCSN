@@ -1,11 +1,11 @@
 import socket
 import pickle
 
-s = socket.socket()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket successfully created!')
-port = 56789
+port = 65500
 
-s.bind(('', port))
+s.bind((socket.gethostname(), port))
 print(f'Socket bind to port {port}')
 
 s.listen(5)
