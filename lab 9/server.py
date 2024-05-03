@@ -1,9 +1,10 @@
 import socket
-import pickle
+import json
+
+port = 65500
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket successfully created!')
-port = 65500
 
 s.bind((socket.gethostname(), port))
 print(f'Socket bind to port {port}')
@@ -18,9 +19,13 @@ meteo_data = {
     'pressure': 30.1
 }
 
+HEADERSIZE = 10
+
 while True:
     conn, addr = s.accept()
     print('Got connection from', addr)
-    data_bytes = pickle.dumps(meteo_data)
-    conn.send(data_bytes)
-    conn.close()
+
+    data_json = json.dumps(meteo_data)
+    msg = f'{len(data_json):<{HEADERSIZE}}' + data_json
+
+    conn.send(bytes(msg, "utf-8"))
